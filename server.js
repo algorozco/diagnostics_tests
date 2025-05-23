@@ -18,6 +18,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/index.html', (req, res) => {
+    console.log('get index');
+    res.sendFile(path.join(__dirname, 'public', 'diagnostics_tests.html'));
+});
+
 // Route to handle incoming GTM requests
 app.post('/trigger', async (req, res) => {
     try {
