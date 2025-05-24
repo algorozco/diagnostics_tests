@@ -61,7 +61,7 @@
       <!-- End Reddit Pixel -->
       <script>
          // Each function modifies only the parameter(s) relevant to its scenario, setting all others to typical valid values.
-
+        const post_url='https://diagnostic-tests.onrender.com'
         const event_type_lower_funnel=['Search','Lead','PageVisit','ViewContent'];
         const event_type_upper_funnel=['Purchase','AddToWishlist'];
 
@@ -411,7 +411,7 @@
         function fireCapiRequest(body) {
            console.log("Sending this body from client: ", body);
            // Replace endpoint and payload with real values as needed
-           fetch('https://diagnostic-tests.onrender.com/trigger', {
+           fetch(post_url+'/trigger', {
              method: 'POST',
              headers: {
                'Content-Type': 'application/json'
