@@ -62,10 +62,20 @@
       <script>
          // Each function modifies only the parameter(s) relevant to its scenario, setting all others to typical valid values.
 
+        const event_type_lower_funnel=['Search','Lead','PageVisit','ViewContent'];
+        const event_type_upper_funnel=['Purchase','AddToWishlist'];
+
          const currentTimestamp = new Date().toISOString();
 
          // Helper: Standard body values for commonly valid usage
          const VALID_PIXEL_BODY = {
+          email: 'testuser@example.com',
+          externalId: 'e836a8aaa8c6d975fe8d9819fc0e12bf0d24892e',
+          idfa: 'CA7583CD-A667-48BC-B806-42ECB2B48608',
+          aaid: '38400000-8cf0-11bd-b23e-10b96e40000d'
+         };
+
+         const VALID_PIXEL_BODY_METADATA = {
           itemCount: 1,
           value: 1255,
           currency: 'USD',
@@ -81,7 +91,38 @@
           {
             "click_id": "3184742045291813272",
             "event_at": currentTimestamp,
-            "event_type": {"tracking_type": "AddToWishlist"},
+            "event_type": {"tracking_type": event_type_lower_funnel[0]},
+            "event_metadata": {
+              "conversion_id": "H72B9A4YXQ"
+            },
+            "user": {
+              "email": "testuser@example.com",
+              "phone_number": "+15554441234",
+              "external_id": "e836a8aaa8c6d975fe8d9819fc0e12bf0d24892e",
+              "uuid": "1684189007728.7c73f2ae-a433-4d7b-9838-f467da98f48e",
+              "ip_address": "192.0.2.1",
+              "user_agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0",
+              "idfa": "CA7583CD-A667-48BC-B806-42ECB2B48608",
+              "aaid": "38400000-8cf0-11bd-b23e-10b96e40000d",
+              "opt_out": false,
+              "screen_dimensions": {"width": 3440, "height": 1440},
+              "data_processing_options": {
+          "modes": ["LDU"],
+          "country": "US",
+          "region": "US-CA"
+              }
+            }
+          }
+          ]
+         };
+
+         const VALID_CAPI_BODY_METADATA = {
+          "test_mode": false,
+          "events": [
+          {
+            "click_id": "3184742045291813272",
+            "event_at": currentTimestamp,
+            "event_type": {"tracking_type": event_type_upper_funnel[0]},
             "event_metadata": {
               "item_count": 1,
               "currency": "USD",
@@ -124,86 +165,92 @@
           var pixel_body = {...VALID_PIXEL_BODY, conversionId: "0"};
           var capi_body = clone(VALID_CAPI_BODY);
           capi_body.events[0].event_metadata.conversion_id = "0";
-          document.getElementById("text_display").innerHTML = "Invalid Conversion ID (0) event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[0];
+          document.getElementById("text_display").innerHTML = "Invalid Conversion ID (0) event sent!"+" ("+event_type_lower_funnel[0]+")";
+          rdt('track', event_type_lower_funnel[0], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
          // Scenario 2: conversion ID is "undefined"
          function fireInvalidConversionIdUndefined() {
-          var pixel_body = {...VALID_PIXEL_BODY, conversionId: undefined};
+          var pixel_body = {...VALID_PIXEL_BODY, conversionId: "undefined"};
           var capi_body = clone(VALID_CAPI_BODY);
-          capi_body.events[0].event_metadata.conversion_id = undefined;
-          document.getElementById("text_display").innerHTML = "Invalid Conversion ID (undefined) event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_metadata.conversion_id = "undefined";
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[0];
+          document.getElementById("text_display").innerHTML = "Invalid Conversion ID (undefined) event sent!"+" ("+event_type_lower_funnel[0]+")";
+          rdt('track', event_type_lower_funnel[0], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
          // Scenario 3: conversion ID is "null"
          function fireInvalidConversionIdNull() {
-          var pixel_body = {...VALID_PIXEL_BODY, conversionId: null};
+          var pixel_body = {...VALID_PIXEL_BODY, conversionId: "null"};
           var capi_body = clone(VALID_CAPI_BODY);
-          capi_body.events[0].event_metadata.conversion_id = null;
-          document.getElementById("text_display").innerHTML = "Invalid Conversion ID (null) event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_metadata.conversion_id = "null";
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[0];
+          document.getElementById("text_display").innerHTML = "Invalid Conversion ID (null) event sent!"+" ("+event_type_lower_funnel[0]+")";
+          rdt('track', event_type_lower_funnel[0], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
          // --- Issue 2: Missing metadata ---
          // Scenario 1: Value is set, currency is missing
          function fireMissingCurrency() {
-          var pixel_body = {...VALID_PIXEL_BODY};
+          var pixel_body = {...VALID_PIXEL_BODY_METADATA};
           delete pixel_body.currency;
-          var capi_body = clone(VALID_CAPI_BODY);
+          var capi_body = clone(VALID_CAPI_BODY_METADATA);
           delete capi_body.events[0].event_metadata.currency;
-          document.getElementById("text_display").innerHTML = "Missing Currency event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_type.tracking_type = event_type_upper_funnel[1];
+          document.getElementById("text_display").innerHTML = "Missing Currency event sent!"+" ("+event_type_upper_funnel[1]+")";
+          rdt('track', event_type_upper_funnel[1], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
          // Scenario 2: Currency is set but not value
          function fireMissingValue() {
-          var pixel_body = {...VALID_PIXEL_BODY};
+          var pixel_body = {...VALID_PIXEL_BODY_METADATA};
           delete pixel_body.value;
-          var capi_body = clone(VALID_CAPI_BODY);
+          var capi_body = clone(VALID_CAPI_BODY_METADATA);
           delete capi_body.events[0].event_metadata.value;
           delete capi_body.events[0].event_metadata.value_decimal;
-          document.getElementById("text_display").innerHTML = "Missing Value event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_type.tracking_type = event_type_upper_funnel[1];
+          document.getElementById("text_display").innerHTML = "Missing Value event sent!"+" ("+event_type_upper_funnel[1]+")";
+          rdt('track', event_type_upper_funnel[1], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
          // --- Issue 3: Non matching currency ---
          // Scenario 1: Currency is different from USD
          function fireNonMatchingCurrency() {
-          var pixel_body = {...VALID_PIXEL_BODY, currency: 'EUR'};
-          var capi_body = clone(VALID_CAPI_BODY);
+          var pixel_body = {...VALID_PIXEL_BODY_METADATA, currency: 'EUR'};
+          var capi_body = clone(VALID_CAPI_BODY_METADATA);
           capi_body.events[0].event_metadata.currency = "EUR";
-          document.getElementById("text_display").innerHTML = "Non-matching Currency event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_type.tracking_type = event_type_upper_funnel[1];
+          document.getElementById("text_display").innerHTML = "Non-matching Currency event sent!"+" ("+event_type_upper_funnel[1]+")";
+          rdt('track', event_type_upper_funnel[1], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
          // --- Issue 4: Unsupported metadata ---
          // Scenario 1: Metadata sent on a page visit event
-         function fireMetadataOnPageVisit() {
-          var pixel_body = {...VALID_PIXEL_BODY};
-          var capi_body = clone(VALID_CAPI_BODY);
-          // For Pixel, send itemCount/currency/value on a "PageVisit" event
-          document.getElementById("text_display").innerHTML = "Unsupported metadata on PageVisit event sent!";
-          rdt('track', 'PageVisit', pixel_body);
-          // For CAPI, send event_type.tracking_type = "PageVisit" and include purchase metadata
-          capi_body.events[0].event_type.tracking_type = "PageVisit";
+         function fireMetadataOnLowFunnel() {
+          var pixel_body = {...VALID_PIXEL_BODY_METADATA};
+          var capi_body = clone(VALID_CAPI_BODY_METADATA);
+          // For Pixel, send itemCount/currency/value on a low funnel event
+          document.getElementById("text_display").innerHTML = "Unsupported metadata on low funnel event sent!"+" ("+event_type_lower_funnel[3]+")";
+          rdt('track', event_type_lower_funnel[3], pixel_body);
+          // For CAPI, send event_type.tracking_type = low funnel and include purchase metadata
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[3];
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
          // --- Issue 5: Missing custom name ---
          // Scenario 1: Custom event sent with no custom event name
          function fireMissingCustomEventName() {
-          var pixel_body = {...VALID_PIXEL_BODY};
+          var pixel_body = {...VALID_PIXEL_BODY,customEventName: ''};
           // Call with a custom event type but missing event name
-          document.getElementById("text_display").innerHTML = "Missing custom event name event sent!";
-          rdt('track', '', pixel_body); // empty custom event name
+          document.getElementById("text_display").innerHTML = "Missing custom event name event sent! (Custom)";
+          rdt('track', 'Custom', pixel_body); // empty custom event name
           var capi_body = clone(VALID_CAPI_BODY);
           capi_body.events[0].event_type.tracking_type = "Custom";
           capi_body.events[0].event_type.custom_event_name = "";
@@ -212,12 +259,13 @@
          
          // --- Issue 6: Invalid email ---
          // Scenario 1: Email set to 'ana.gonzalez@reddit.com'
-         function fireInvalidEmailPlaceholder() {
+         function fireInvalidSelfEmail() {
           var pixel_body = {...VALID_PIXEL_BODY, email: 'ana.gonzalez@reddit.com'};
           var capi_body = clone(VALID_CAPI_BODY);
           capi_body.events[0].user.email = 'ana.gonzalez@reddit.com';
-          document.getElementById("text_display").innerHTML = "Invalid Email (placeholder) event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[1];
+          document.getElementById("text_display").innerHTML = "Invalid Email (self) event sent!"+" ("+event_type_lower_funnel[1]+")";
+          rdt('track', event_type_lower_funnel[1], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
@@ -226,8 +274,9 @@
           var pixel_body = {...VALID_PIXEL_BODY, email: ''};
           var capi_body = clone(VALID_CAPI_BODY);
           capi_body.events[0].user.email = '';
-          document.getElementById("text_display").innerHTML = "Invalid Email (empty) event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[1];
+          document.getElementById("text_display").innerHTML = "Invalid Email (empty) event sent!"+" ("+event_type_lower_funnel[1]+")";
+          rdt('track', event_type_lower_funnel[1], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
@@ -236,8 +285,9 @@
           var pixel_body = {...VALID_PIXEL_BODY, email: undefined};
           var capi_body = clone(VALID_CAPI_BODY);
           capi_body.events[0].user.email = undefined;
-          document.getElementById("text_display").innerHTML = "Invalid Email (undefined) event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[1];
+          document.getElementById("text_display").innerHTML = "Invalid Email (undefined) event sent!"+" ("+event_type_lower_funnel[1]+")";
+          rdt('track', event_type_lower_funnel[1], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
@@ -246,8 +296,9 @@
           var pixel_body = {...VALID_PIXEL_BODY, email: null};
           var capi_body = clone(VALID_CAPI_BODY);
           capi_body.events[0].user.email = null;
-          document.getElementById("text_display").innerHTML = "Invalid Email (null) event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[1];
+          document.getElementById("text_display").innerHTML = "Invalid Email (null) event sent!"+" ("+event_type_lower_funnel[1]+")";
+          rdt('track', event_type_lower_funnel[1], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
@@ -256,10 +307,23 @@
           var pixel_body = {...VALID_PIXEL_BODY, email: "not-an-email"};
           var capi_body = clone(VALID_CAPI_BODY);
           capi_body.events[0].user.email = "not-an-email";
-          document.getElementById("text_display").innerHTML = "Invalid Email (bad format) event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[1];
+          document.getElementById("text_display").innerHTML = "Invalid Email (bad format) event sent!"+" ("+event_type_lower_funnel[1]+")";
+          rdt('track', event_type_lower_funnel[1], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
+
+          // Scenario 6: Email placeholder
+         function fireInvalidEmailPlaceholder() {
+          var pixel_body = {...VALID_PIXEL_BODY, email: '<EMAIL-HERE>'};
+          var capi_body = clone(VALID_CAPI_BODY);
+          capi_body.events[0].user.email = '<EMAIL-HERE>';
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[1];
+          document.getElementById("text_display").innerHTML = "Invalid Email (placeholder) event sent!"+" ("+event_type_lower_funnel[1]+")";
+          rdt('track', event_type_lower_funnel[1], pixel_body);
+          fireCapiRequest(JSON.stringify(capi_body));
+         }
+         
          
          // --- Issue 7: Placeholder IDFA ---
          // Scenario 1: IDFA is "<IDFA-HERE>"
@@ -267,8 +331,9 @@
           var pixel_body = {...VALID_PIXEL_BODY, idfa: "<IDFA-HERE>"};
           var capi_body = clone(VALID_CAPI_BODY);
           capi_body.events[0].user.idfa = "<IDFA-HERE>";
-          document.getElementById("text_display").innerHTML = "Placeholder IDFA event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[2];
+          document.getElementById("text_display").innerHTML = "Placeholder IDFA event sent!"+" ("+event_type_lower_funnel[2]+")";
+          rdt('track', event_type_lower_funnel[2], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
@@ -278,8 +343,9 @@
           var pixel_body = {...VALID_PIXEL_BODY, aaid: "<AAID-HERE>"};
           var capi_body = clone(VALID_CAPI_BODY);
           capi_body.events[0].user.aaid = "<AAID-HERE>";
-          document.getElementById("text_display").innerHTML = "Placeholder AAID event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[2];
+          document.getElementById("text_display").innerHTML = "Placeholder AAID event sent!"+" ("+event_type_lower_funnel[2]+")";
+          rdt('track', event_type_lower_funnel[2], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
@@ -289,8 +355,9 @@
           var pixel_body = {...VALID_PIXEL_BODY, externalId: "<EXTERNAL-ID-HERE>"};
           var capi_body = clone(VALID_CAPI_BODY);
           capi_body.events[0].user.external_id = "<EXTERNAL-ID-HERE>";
-          document.getElementById("text_display").innerHTML = "Placeholder External ID event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[2];
+          document.getElementById("text_display").innerHTML = "Placeholder External ID event sent!"+" ("+event_type_lower_funnel[2]+")";
+          rdt('track', event_type_lower_funnel[2], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }
          
@@ -300,16 +367,51 @@
           var pixel_body = {...VALID_PIXEL_BODY};
           var capi_body = clone(VALID_CAPI_BODY);
           capi_body.events[0].user.data_processing_options.modes = ["GDPR"];
-          document.getElementById("text_display").innerHTML = "Invalid data processing mode event sent!";
-          rdt('track', 'AddToWishlist', pixel_body);
+          capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[2];
+          document.getElementById("text_display").innerHTML = "Invalid data processing mode event sent!"+" ("+event_type_lower_funnel[2]+")";
+          rdt('track', event_type_lower_funnel[2], pixel_body);
           fireCapiRequest(JSON.stringify(capi_body));
          }      
+
+        // --- Issue 11: Overused conversion ID ---
+        function fireOverusedConversionId() {
+            document.getElementById("text_display").innerHTML = "Triggered Overused Conversion ID events!"+" ("+event_type_upper_funnel[0]+")";
+            const WAIT_TIME = 100; // Wait time in milliseconds (adjust as necessary)
+            let i = 0;
+
+            function sendRequest() {
+                if (i >= 101) { //SWITCH TO 101
+                    return; // Stop after 103 requests
+                }
+
+                const email = VALID_PIXEL_BODY.email;
+                const value = VALID_PIXEL_BODY.value;
+
+                const conversion_id = generateConversionID(email, value, '1748045847').then( // Override timestamp to cause overuse
+                  hash => {
+                    var pixel_body = {...VALID_PIXEL_BODY, conversionId: hash};
+                    var capi_body = clone(VALID_CAPI_BODY);
+                    capi_body.events[0].event_metadata.conversion_id = hash;
+                    capi_body.events[0].event_type.tracking_type = event_type_upper_funnel[0];
+
+                    rdt('track', event_type_upper_funnel[0], pixel_body);
+                    fireCapiRequest(JSON.stringify(capi_body));
+
+                  }
+                );
+
+                i++;
+
+                setTimeout(sendRequest, WAIT_TIME); // Wait to avoid rate limits
+            }
+
+            sendRequest(); 
+        }
          
-            
-         function fireCapiRequest(body) {
+        function fireCapiRequest(body) {
            console.log("Sending this body from client: ", body);
            // Replace endpoint and payload with real values as needed
-           fetch('https://diagnostic-tests.onrender.com/trigger', {
+           fetch('https://17e1-98-37-234-223.ngrok-free.app/trigger', {
              method: 'POST',
              headers: {
                'Content-Type': 'application/json'
@@ -318,7 +420,7 @@
          })
                .then(response => response.json())
            .then(data => {
-             //alert('CAPI request sent. Check network console for response.');
+            // alert('CAPI request sent. Check network console for response.');
              console.log('CAPI Response:', data);
            })
            .catch(error => {
@@ -326,6 +428,25 @@
              console.error(error);
            })  
          }
+
+        async function generateConversionID(email, value, timestamp) {
+          const str = email + value + timestamp;
+
+            // Encode the input string as a Uint8Array
+            const inputBuffer = new TextEncoder().encode(str);
+
+            // Use the Web Crypto API to generate the SHA-256 hash
+            const hashBuffer = await crypto.subtle.digest('SHA-256', inputBuffer);
+
+            // Convert the buffer to a byte array
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+            // Convert bytes to hex string
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            return hashHex;
+        }
+
       </script>
    </head>
    <body>
@@ -345,24 +466,21 @@
     <button onclick="fireMissingValue()">Trigger Missing Value</button>
     <p></p>
     <p></p>
-
     <!-- Issue 3: Non-matching currency -->
     <button onclick="fireNonMatchingCurrency()">Trigger Non-matching Currency (not USD)</button>
     <p></p>
     <p></p>
-
     <!-- Issue 4: Unsupported metadata -->
-    <button onclick="fireMetadataOnPageVisit()">Trigger Metadata on PageVisit Event</button>
+    <button onclick="fireMetadataOnLowFunnel()">Trigger Metadata on Low Funnel Event</button>
     <p></p>
     <p></p>
-
-    <!-- Issue 5: Missing custom event name 
+    <!-- Issue 5: Missing custom event name -->
     <button onclick="fireMissingCustomEventName()">Trigger Missing Custom Event Name</button>
     <p></p>
-    <p></p> -->
-
+    <p></p> 
     <!-- Issue 6: Invalid email -->
     <button onclick="fireInvalidEmailPlaceholder()">Trigger Invalid Email (placeholder)</button>
+    <button onclick="fireInvalidSelfEmail()">Trigger Invalid Email (self)</button>
     <p></p>
     <button onclick="fireInvalidEmailEmpty()">Trigger Invalid Email (empty)</button>
     <p></p>
@@ -372,21 +490,19 @@
     <p></p>
     <button onclick="fireInvalidEmailFormat()">Trigger Invalid Email (bad format)</button>
     <p></p>
-
     <!-- Issue 7: Placeholder IDFA -->
     <button onclick="firePlaceholderIdfa()">Trigger Placeholder IDFA</button>
     <p></p>
-
     <!-- Issue 8: Placeholder AAID -->
     <button onclick="firePlaceholderAaid()">Trigger Placeholder AAID</button>
     <p></p>
-
     <!-- Issue 9: Placeholder External ID -->
     <button onclick="firePlaceholderExternalId()">Trigger Placeholder External ID</button>
     <p></p>
-
     <!-- Issue 10: Invalid data processing mode -->
     <button onclick="fireInvalidDataProcessingMode()">Trigger Invalid Data Processing Mode</button>
     <p></p>
+     <!-- Issue 11: Overused conversion ID -->
+    <button onclick="fireOverusedConversionId()">Trigger Overused Conversion ID ('0')</button>
    </body>
 </html>
