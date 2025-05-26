@@ -18,7 +18,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/diagnostics_tests.html', (req, res) => {
+app.get('/index.html', (req, res) => {
     console.log('get diagnostics_tests');
     res.sendFile(path.join(__dirname, 'public', 'diagnostics_tests.html'));
 });
