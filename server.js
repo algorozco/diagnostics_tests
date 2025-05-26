@@ -14,11 +14,11 @@ app.use(bodyParser.json());
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-CAPI-Token, X-Account-ID");
   next();
 });
 
-app.get('/index.html', (req, res) => {
+app.get('/diagnostics_tests.html', (req, res) => {
     console.log('get diagnostics_tests');
     res.sendFile(path.join(__dirname, 'public', 'diagnostics_tests.html'));
 });
