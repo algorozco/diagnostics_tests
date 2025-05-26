@@ -18,40 +18,70 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/index.html', (req, res) => {
-    console.log('get index');
+app.get('/diagnostics_tests.html', (req, res) => {
+    console.log('get diagnostics_tests');
     res.sendFile(path.join(__dirname, 'public', 'diagnostics_tests.html'));
 });
 
 // Route to handle incoming GTM requests
 app.post('/trigger', async (req, res) => {
-    try {
-        const data = req.body; // Data sent from frontend
-        var capi_response = await triggerCAPIreq(data, authToken,account_id);
-        res.status(200).send(capi_response); // Send a 200 OK response
-    } catch (error) {
-        console.error('Error processing data:', error);
-        res.status(500).send('Error'); // Send a 500 Error response
-    }
+  try {
+    const body = req.body;
+    console.log("Received body from client (raw):", body);
+    console.log("Received body type:", typeof body);
+
+    // Get account ID and CAPI token from headers, fall back to defaults if not provided
+    const accountId = req.headers['x-account-id'] || account_id;
+    const capiTOKEN = req.headers['x-capi-token'] || authToken;
+
+    // Send event to Reddit CAPI
+    const capiResponse = await sendToRedditCAPI(body, accountId, capiTOKEN);
+    console.log('CAPI Response:', capiResponse);
+
+    res.json({ success: true, message: 'Events processed successfully' });
+  } catch (error) {
+    console.error('Error processing request:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
-async function triggerCAPIreq(data, authToken,account_id) {
-  const endpoint = 'https://ads-api.reddit.com/api/v2.0/conversions/events/'+account_id;
-  const event_data = data;
+// Update the sendToRedditCAPI function to use the provided account ID and auth token
+async function sendToRedditCAPI(event, accountId, authToken) {
+  const capiUrl = `https://ads-api.reddit.com/api/v2.0/conversions/events/${accountId}`;
 
-  // Send a POST request with the authorization header
+  console.log("Event being sent to CAPI:", event);
+  console.log("Event type:", typeof event);
+  console.log("Sending to account ID:", accountId);
+  
+  const requestBody = JSON.stringify(event);
+  console.log("Stringified request body:", requestBody);
+
+  const response = await fetch(capiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
+    },
+    body: requestBody
+  });
+
+  const responseText = await response.text();
+  console.log("Raw response text:", responseText);
+
+  if (!response.ok) {
+    try {
+      const error = JSON.parse(responseText);
+      throw new Error(`CAPI request failed: ${error.message || response.statusText}`);
+    } catch (parseError) {
+      throw new Error(`CAPI request failed: ${responseText}`);
+    }
+  }
+
   try {
-    const response = await axios.post(endpoint, event_data, {
-      headers: {
-        'Authorization': `Bearer ${authToken}` // Or the appropriate format for your auth token
-      }
-    });
-    //console.log('CAPI Response:', response.data);
-    return response.data; // Return the response data for further processing
-  } catch (error) {
-    console.error('Error in CAPI request:', error.response ? error.response.data : error);
-    //Handle error appropriately, maybe throw or return an error object
-    return null; //Or throw error;
+    return JSON.parse(responseText);
+  } catch (parseError) {
+    console.error("Failed to parse response:", parseError);
+    throw new Error(`Failed to parse CAPI response: ${responseText}`);
   }
 }
 
