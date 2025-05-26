@@ -2,58 +2,193 @@
 <html lang="en">
    <head>
       <meta charset="UTF-8">
-      <title>Trigger Diagnostic Issues: CAPI and Pixel</title>
+      <title>Diagnostic Testing</title>
       <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700&display=swap" rel="stylesheet">
       <style>
          body {
-         background-color: #dae0e6;
-         font-family: 'Noto Sans', Arial, sans-serif;
-         color: #1a1a1b;
-         margin: 0;
-         padding: 0;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            font-family: 'Noto Sans', Arial, sans-serif;
+            color: #1a1a1b;
+         }
+         .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+         }
+         .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #f8f9fa;
+            z-index: 1000;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e4e2;
+         }
+         .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
          }
          h1 {
-         color: #1a1a1b;
-         font-weight: 700;
-         font-size: 2rem;
-         margin: 32px 0 24px 0;
-         text-align: center;
+            color: #1a1a1b;
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin: 0 0 10px 0;
+            text-align: center;
+         }
+         h2 {
+            color: #1a1a1b;
+            font-weight: 700;
+            font-size: 1rem;
          }
          #text_display {
-         margin: 16px auto;
-         width: 90%;
-         max-width: 600px;
-         background: #fff;
-         border-radius: 8px;
-         box-shadow: 0 2px 8px rgba(26, 26, 27, 0.06);
-         padding: 24px;
-         font-size: 1rem;
-         min-height: 40px;
+            margin: 0;
+            width: 100%;
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(26, 26, 27, 0.06);
+            padding: 8px 12px;
+            font-size: 1rem;
+            min-height: 20px;
+            border: 1px solid #e5e4e2;
+         }
+         .main-content {
+            margin-top: 100px;
+         }
+         .test-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+         }
+         .issue-group {
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(26, 26, 27, 0.06);
+            padding: 12px;
+            margin-bottom: 0;
+            border: 1px solid #e5e4e2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+         }
+         .issue-group h2 {
+            margin: 0 0 8px 0;
+            color: #1a1a1b;
+            font-size: 1rem;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e5e4e2;
+         }
+         .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+         }
+         .button-group button {
+            width: 100%;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
          }
          button {
-         display: inline-block;
-         margin: 8px;
-         padding: 12px 24px;
-         border: none;
-         border-radius: 999px;
-         background-color: #fff;
-         color: #ff4500;
-         font-weight: 700;
-         font-size: 1rem;
-         cursor: pointer;
-         box-shadow: 0 1px 4px rgba(26, 26, 27, 0.06);
-         transition: background 0.2s;
+            display: inline-block;
+            margin: 2px;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #ff4500;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
          }
          button:hover {
-         background-color: #E5E4E2;
+            background-color: #ff5722;
          }
-         /* Center content */
-         body > * {
-         display: block;
-         margin-left: auto;
-         margin-right: auto;
+         .override-section {
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(26, 26, 27, 0.06);
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #e5e4e2;
+         }
+         .form-group {
+            margin-bottom: 8px;
+         }
+         .form-group label {
+            display: block;
+            margin-bottom: 2px;
+            font-weight: 600;
+            color: #1a1a1b;
+            font-size: 0.85rem;
+         }
+         .form-group input {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #e5e4e2;
+            border-radius: 4px;
+            font-size: 0.85rem;
+         }
+         .form-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+         }
+         .form-row .form-group {
+            flex: 1;
+         }
+         .section-title {
+            font-size: 1.2rem;
+            margin: 20px 0 12px;
+            color: #1a1a1b;
+            font-weight: 700;
+         }
+         select.form-control {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #e5e4e2;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            background-color: white;
+         }
+         /* Tab styles */
+         .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 12px;
+         }
+         .tab-button {
+            padding: 8px 16px;
+            background: #fff;
+            border: 1px solid #e5e4e2;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            color: #1a1a1b;
+            transition: all 0.2s;
+         }
+         .tab-button.active {
+            background: #ff4500;
+            color: #fff;
+            border-color: #ff4500;
+         }
+         .tab-content {
+            display: none;
+         }
+         .tab-content.active {
+            display: block;
          }
       </style>
+            <script>
+              const accountId='t2_bn7v9r2q'
+           </script>
       <!-- Reddit Pixel -->
       <script>
          !function(w,d){if(!w.rdt){var p=w.rdt=function(){p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)};p.callQueue=[];var t=d.createElement("script");t.src="https://www.redditstatic.com/ads/pixel.js",t.async=!0;var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}}(window,document);rdt('init','t2_bn7v9r2q');
@@ -61,9 +196,9 @@
       <!-- End Reddit Pixel -->
       <script>
          // Each function modifies only the parameter(s) relevant to its scenario, setting all others to typical valid values.
-        const post_url='https://diagnostic-tests.onrender.com'
+        const post_url='https://17e1-98-37-234-223.ngrok-free.app'
         const event_type_lower_funnel=['Search','Lead','PageVisit','ViewContent'];
-        const event_type_upper_funnel=['Purchase','AddToWishlist'];
+        const event_type_upper_funnel=['Purchase','AddToWishlist','SignUp'];
 
          const currentTimestamp = new Date().toISOString();
 
@@ -409,25 +544,78 @@
         }
          
         function fireCapiRequest(body) {
-           console.log("Sending this body from client: ", body);
-           // Replace endpoint and payload with real values as needed
+          console.log("Sending request to Account ID: ", document.getElementById('accountId').value || "default"); 
+          console.log("Sending this body (raw):", body);
+           
+           const accountId = document.getElementById('accountId').value;
+           const capiToken = document.getElementById('capiToken').value;
+           
+           // Ensure body is a string if it's not already
+           const requestBody = typeof body === 'string' ? body : JSON.stringify(body);
+           
            fetch(post_url+'/trigger', {
              method: 'POST',
              headers: {
-               'Content-Type': 'application/json'
+               'Content-Type': 'application/json',
+               ...(accountId && { 'X-Account-ID': accountId }),
+               ...(capiToken && { 'X-CAPI-Token': capiToken })
              },
-             body: body
-         })
-               .then(response => response.json())
+             body: requestBody
+           })
+           .then(response => {
+             if (!response.ok) {
+               return response.text().then(text => {
+                 try {
+                   const error = JSON.parse(text);
+                   throw new Error(JSON.stringify(error));
+                 } catch (e) {
+                   throw new Error(text);
+                 }
+               });
+             }
+             return response.json();
+           })
            .then(data => {
-            // alert('CAPI request sent. Check network console for response.');
              console.log('CAPI Response:', data);
+             if (data.error) {
+               console.error('Server Error:', data.error);
+               document.getElementById("text_display").innerHTML = "Error: " + data.error;
+             }
            })
            .catch(error => {
-             alert('CAPI request failed.');
-             console.error(error);
-           })  
-         }
+             console.error('Request failed:', error);
+             try {
+               const errorData = JSON.parse(error.message);
+               console.error('Server Error Details:', errorData);
+               document.getElementById("text_display").innerHTML = "Error: " + (errorData.message || errorData.error || error.message);
+             } catch (e) {
+               document.getElementById("text_display").innerHTML = "Error: " + error.message;
+             }
+           });
+        }
+        function triggerImagePixel() {
+
+          const account_id = document.getElementById('accountId').value || accountId;
+          const eventName = event_type_lower_funnel[3];
+          // Generate a unique ID
+          var uniqueId = 'tracking-pixel-' + new Date().getTime() + '-' + Math.floor(Math.random() * 1000);
+
+          // Create a new img element
+          var img = document.createElement('img');
+          img.height = 1;
+          img.width = 1;
+          img.style.display = 'none';
+          img.id = uniqueId;
+          // Now giving it a try to modify the URL with a Unique Query Parameter
+            img.src = `https://alb.reddit.com/rp.gif?id=${account_id}&event=${eventName}&integration=overidden`;
+
+          // Append the img element to the body
+          document.body.appendChild(img);
+
+          document.getElementById("text_display").innerHTML = "1x1 Pixel with invalid integration type sent"+" ("+event_type_lower_funnel[2]+")";
+
+          console.log(img);
+        }
 
         async function generateConversionID(email, value, timestamp) {
           const str = email + value + timestamp;
@@ -447,62 +635,438 @@
             return hashHex;
         }
 
+        function toggleCustomEventName() {
+          const eventType = document.getElementById('eventType').value;
+          const customEventNameGroup = document.getElementById('customEventNameGroup');
+          customEventNameGroup.style.display = eventType === 'Custom' ? 'block' : 'none';
+        }
+
+        function triggerBodyOverride() {
+          const overrideValues = {
+            eventType: document.getElementById('eventType').value,
+            customEventName: document.getElementById('customEventName').value,
+            clickId: document.getElementById('clickId').value,
+            email: document.getElementById('email').value,
+            externalId: document.getElementById('externalId').value,
+            idfa: document.getElementById('idfa').value,
+            aaid: document.getElementById('aaid').value,
+            value: parseInt(document.getElementById('value').value) || null,
+            currency: document.getElementById('currency').value,
+            itemCount: parseInt(document.getElementById('itemCount').value) || null,
+            conversionId: document.getElementById('conversionId').value,
+            phoneNumber: document.getElementById('phoneNumber').value,
+            uuid: document.getElementById('uuid').value,
+            ipAddress: document.getElementById('ipAddress').value,
+            userAgent: document.getElementById('userAgent').value,
+            optOut: document.getElementById('optOut').value === 'true',
+            screenWidth: parseInt(document.getElementById('screenWidth').value) || null,
+            screenHeight: parseInt(document.getElementById('screenHeight').value) || null,
+            dataProcessingMode: document.getElementById('dataProcessingMode').value,
+            country: document.getElementById('country').value,
+            region: document.getElementById('region').value,
+            productId: document.getElementById('productId').value,
+            productName: document.getElementById('productName').value,
+            productCategory: document.getElementById('productCategory').value
+          };
+
+          // Create pixel body with only fields that have values
+          const pixelBody = {};
+          if (overrideValues.itemCount) pixelBody.itemCount = overrideValues.itemCount;
+          if (overrideValues.currency) pixelBody.currency = overrideValues.currency;
+          if (overrideValues.email) pixelBody.email = overrideValues.email;
+          if (overrideValues.externalId) pixelBody.externalId = overrideValues.externalId;
+          if (overrideValues.idfa) pixelBody.idfa = overrideValues.idfa;
+          if (overrideValues.aaid) pixelBody.aaid = overrideValues.aaid;
+          if (overrideValues.value) pixelBody.value = overrideValues.value;
+
+          // Create CAPI body with only fields that have values
+          const capiBody = {
+            "test_mode": false,
+            "events": [{
+              "event_at": currentTimestamp
+            }]
+          };
+
+          // Add click_id if provided
+          if (overrideValues.clickId) {
+            capiBody.events[0].click_id = overrideValues.clickId;
+          }
+
+          // Add event type if provided
+          if (overrideValues.eventType) {
+            capiBody.events[0].event_type = {
+              "tracking_type": overrideValues.eventType
+            };
+            if (overrideValues.eventType === 'Custom' && overrideValues.customEventName) {
+              capiBody.events[0].event_type.custom_event_name = overrideValues.customEventName;
+            }
+          }
+
+          // Add event metadata only if any fields are provided
+          const eventMetadata = {};
+          if (overrideValues.itemCount) eventMetadata.item_count = overrideValues.itemCount;
+          if (overrideValues.currency) eventMetadata.currency = overrideValues.currency;
+          if (overrideValues.value) {
+            eventMetadata.value = overrideValues.value;
+            eventMetadata.value_decimal = overrideValues.value;
+          }
+          if (overrideValues.conversionId) eventMetadata.conversion_id = overrideValues.conversionId;
+          
+          // Add products if any product fields are provided
+          if (overrideValues.productId || overrideValues.productName || overrideValues.productCategory) {
+            eventMetadata.products = [{
+              ...(overrideValues.productId && { id: overrideValues.productId }),
+              ...(overrideValues.productName && { name: overrideValues.productName }),
+              ...(overrideValues.productCategory && { category: overrideValues.productCategory })
+            }];
+          }
+          
+          if (Object.keys(eventMetadata).length > 0) {
+            capiBody.events[0].event_metadata = eventMetadata;
+          }
+
+          // Add user data only if any fields are provided
+          const userData = {};
+          if (overrideValues.email) userData.email = overrideValues.email;
+          if (overrideValues.externalId) userData.external_id = overrideValues.externalId;
+          if (overrideValues.idfa) userData.idfa = overrideValues.idfa;
+          if (overrideValues.aaid) userData.aaid = overrideValues.aaid;
+          if (overrideValues.phoneNumber) userData.phone_number = overrideValues.phoneNumber;
+          if (overrideValues.uuid) userData.uuid = overrideValues.uuid;
+          if (overrideValues.ipAddress) userData.ip_address = overrideValues.ipAddress;
+          if (overrideValues.userAgent) userData.user_agent = overrideValues.userAgent;
+          if (overrideValues.optOut !== undefined) userData.opt_out = overrideValues.optOut;
+          
+          // Add screen dimensions if either width or height is provided
+          if (overrideValues.screenWidth || overrideValues.screenHeight) {
+            userData.screen_dimensions = {
+              ...(overrideValues.screenWidth && { width: overrideValues.screenWidth }),
+              ...(overrideValues.screenHeight && { height: overrideValues.screenHeight })
+            };
+          }
+          
+          // Add data processing options if any fields are provided
+          if (overrideValues.dataProcessingMode || overrideValues.country || overrideValues.region) {
+            userData.data_processing_options = {
+              ...(overrideValues.dataProcessingMode && { modes: [overrideValues.dataProcessingMode] }),
+              ...(overrideValues.country && { country: overrideValues.country }),
+              ...(overrideValues.region && { region: overrideValues.region })
+            };
+          }
+          
+          if (Object.keys(userData).length > 0) {
+            capiBody.events[0].user = userData;
+          }
+          
+          document.getElementById("text_display").innerHTML = "Override values applied successfully!";
+
+          rdt('track', capiBody.events[0].event_type.tracking_type, pixelBody);
+          fireCapiRequest(JSON.stringify(capiBody));
+        }
+
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+               content.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+               button.classList.remove('active');
+            });
+            
+            // Show selected tab content and activate its button
+            document.getElementById(tabName + '-content').classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+         }
       </script>
    </head>
-   <body>
-      <h1>Trigger Diagnostic Issues: CAPI and Pixel</h1>
-      <p id="text_display"></p>
-    <!-- Issue 1: Invalid conversion ID -->
-    <button onclick="fireInvalidConversionIdZero()">Trigger Invalid Conversion ID ('0')</button>
-    <p></p>
-    <button onclick="fireInvalidConversionIdUndefined()">Trigger Invalid Conversion ID (undefined)</button>
-    <p></p>
-    <button onclick="fireInvalidConversionIdNull()">Trigger Invalid Conversion ID (null)</button>
-    <p></p>
-    <p></p>
-    <!-- Issue 2: Missing metadata -->
-    <button onclick="fireMissingCurrency()">Trigger Missing Currency</button>
-    <p></p>
-    <button onclick="fireMissingValue()">Trigger Missing Value</button>
-    <p></p>
-    <p></p>
-    <!-- Issue 3: Non-matching currency -->
-    <button onclick="fireNonMatchingCurrency()">Trigger Non-matching Currency (not USD)</button>
-    <p></p>
-    <p></p>
-    <!-- Issue 4: Unsupported metadata -->
-    <button onclick="fireMetadataOnLowFunnel()">Trigger Metadata on Low Funnel Event</button>
-    <p></p>
-    <p></p>
-    <!-- Issue 5: Missing custom event name -->
-    <button onclick="fireMissingCustomEventName()">Trigger Missing Custom Event Name</button>
-    <p></p>
-    <p></p> 
-    <!-- Issue 6: Invalid email -->
-    <button onclick="fireInvalidEmailPlaceholder()">Trigger Invalid Email (placeholder)</button>
-    <button onclick="fireInvalidSelfEmail()">Trigger Invalid Email (self)</button>
-    <p></p>
-    <button onclick="fireInvalidEmailEmpty()">Trigger Invalid Email (empty)</button>
-    <p></p>
-    <button onclick="fireInvalidEmailUndefined()">Trigger Invalid Email (undefined)</button>
-    <p></p>
-    <button onclick="fireInvalidEmailNull()">Trigger Invalid Email (null)</button>
-    <p></p>
-    <button onclick="fireInvalidEmailFormat()">Trigger Invalid Email (bad format)</button>
-    <p></p>
-    <!-- Issue 7: Placeholder IDFA -->
-    <button onclick="firePlaceholderIdfa()">Trigger Placeholder IDFA</button>
-    <p></p>
-    <!-- Issue 8: Placeholder AAID -->
-    <button onclick="firePlaceholderAaid()">Trigger Placeholder AAID</button>
-    <p></p>
-    <!-- Issue 9: Placeholder External ID -->
-    <button onclick="firePlaceholderExternalId()">Trigger Placeholder External ID</button>
-    <p></p>
-    <!-- Issue 10: Invalid data processing mode -->
-    <button onclick="fireInvalidDataProcessingMode()">Trigger Invalid Data Processing Mode</button>
-    <p></p>
-     <!-- Issue 11: Overused conversion ID -->
-    <button onclick="fireOverusedConversionId()">Trigger Overused Conversion ID ('0')</button>
-   </body>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h1>Diagnostic Testing</h1>
+      <p id="text_display">Ready to test! Click a button to trigger an event.
+      </p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="main-content">
+      <!-- Account Settings Section (Pinned) -->
+      <div class="override-section">
+        <h2>Override Credentials</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="accountId">Account ID</label>
+            <input type="text" id="accountId" placeholder="t2_bn7v9r2q">
+          </div>
+          <div class="form-group">
+            <label for="capiToken">CAPI Token</label>
+            <input type="text" id="capiToken" placeholder="Enter CAPI token">
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button id="test-cases-tab" class="tab-button active" onclick="switchTab('test-cases')">Test Cases</button>
+        <button id="override-tab" class="tab-button" onclick="switchTab('override')">Override Event Body</button>
+      </div>
+
+      <!-- Test Cases Tab Content -->
+      <div id="test-cases-content" class="tab-content active">
+        <h2 class="section-title">Test Cases</h2>
+        <div class="test-cases-grid">
+          <!-- Issue 1: Invalid conversion ID -->
+          <div class="issue-group">
+            <h2>Invalid Conversion ID</h2>
+            <div class="button-group">
+              <button onclick="fireInvalidConversionIdZero()">Trigger Invalid Conversion ID ('0')</button>
+              <button onclick="fireInvalidConversionIdUndefined()">Trigger Invalid Conversion ID (undefined)</button>
+              <button onclick="fireInvalidConversionIdNull()">Trigger Invalid Conversion ID (null)</button>
+            </div>
+          </div>
+
+          <!-- Issue 2: Missing metadata -->
+          <div class="issue-group">
+            <h2>Missing Metadata</h2>
+            <div class="button-group">
+              <button onclick="fireMissingCurrency()">Trigger Missing Currency</button>
+              <button onclick="fireMissingValue()">Trigger Missing Value</button>
+            </div>
+          </div>
+
+          <!-- Issue 3: Non-matching currency -->
+          <div class="issue-group">
+            <h2>Non-matching Currency</h2>
+            <div class="button-group">
+              <button onclick="fireNonMatchingCurrency()">Trigger Non-matching Currency (not USD)</button>
+            </div>
+          </div>
+
+          <!-- Issue 4: Unsupported metadata -->
+          <div class="issue-group">
+            <h2>Unsupported Metadata</h2>
+            <div class="button-group">
+              <button onclick="fireMetadataOnLowFunnel()">Trigger Metadata on Low Funnel Event</button>
+            </div>
+          </div>
+
+          <!-- Issue 5: Missing custom event name -->
+          <div class="issue-group">
+            <h2>Missing Custom Event Name</h2>
+            <div class="button-group">
+              <button onclick="fireMissingCustomEventName()">Trigger Missing Custom Event Name</button>
+            </div>
+          </div>
+
+          <!-- Issue 6: Invalid email -->
+          <div class="issue-group">
+            <h2>Invalid Email</h2>
+            <div class="button-group">
+              <button onclick="fireInvalidEmailPlaceholder()">Trigger Invalid Email (placeholder)</button>
+              <button onclick="fireInvalidSelfEmail()">Trigger Invalid Email (self)</button>
+              <button onclick="fireInvalidEmailEmpty()">Trigger Invalid Email (empty)</button>
+              <button onclick="fireInvalidEmailUndefined()">Trigger Invalid Email (undefined)</button>
+              <button onclick="fireInvalidEmailNull()">Trigger Invalid Email (null)</button>
+              <button onclick="fireInvalidEmailFormat()">Trigger Invalid Email (bad format)</button>
+            </div>
+          </div>
+
+          <!-- Issue 7: Placeholder IDFA -->
+          <div class="issue-group">
+            <h2>Placeholder IDFA</h2>
+            <div class="button-group">
+              <button onclick="firePlaceholderIdfa()">Trigger Placeholder IDFA</button>
+            </div>
+          </div>
+
+          <!-- Issue 8: Placeholder AAID -->
+          <div class="issue-group">
+            <h2>Placeholder AAID</h2>
+            <div class="button-group">
+              <button onclick="firePlaceholderAaid()">Trigger Placeholder AAID</button>
+            </div>
+          </div>
+
+          <!-- Issue 9: Placeholder External ID -->
+          <div class="issue-group">
+            <h2>Placeholder External ID</h2>
+            <div class="button-group">
+              <button onclick="firePlaceholderExternalId()">Trigger Placeholder External ID</button>
+            </div>
+          </div>
+
+          <!-- Issue 10: Invalid data processing mode -->
+          <div class="issue-group">
+            <h2>Invalid Data Processing Mode</h2>
+            <div class="button-group">
+              <button onclick="fireInvalidDataProcessingMode()">Trigger Invalid Data Processing Mode</button>
+            </div>
+          </div>
+
+          <!-- Issue 11: Overused conversion ID -->
+          <div class="issue-group">
+            <h2>Overused Conversion ID</h2>
+            <div class="button-group">
+              <button onclick="fireOverusedConversionId()">Trigger Overused Conversion ID</button>
+            </div>
+          </div>
+
+          <!-- Issue 12: Invalid integration type -->
+          <div class="issue-group">
+            <h2>Invalid Integration Type (1x1 Pixel)</h2>
+            <div class="button-group">
+              <button onclick="triggerImagePixel()">Invalid Integration Type</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Override Tab Content -->
+      <div id="override-content" class="tab-content">
+        <!-- Override Section -->
+        <div class="override-section">
+          <h2>Override Event Body</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="eventType">Event Type</label>
+              <select id="eventType" class="form-control" onchange="toggleCustomEventName()">
+                <option value="">Select Event Type</option>
+                <option value="Search">Search</option>
+                <option value="SignUp">SignUp</option>
+                <option value="Lead">Lead</option>
+                <option value="PageVisit">PageVisit</option>
+                <option value="ViewContent">ViewContent</option>
+                <option value="Purchase">Purchase</option>
+                <option value="AddToWishlist">AddToWishlist</option>
+                <option value="AddToCart">AddToCart</option>
+                <option value="Custom">Custom</option>
+              </select>
+            </div>
+            <div class="form-group" id="customEventNameGroup" style="display: none;">
+              <label for="customEventName">Custom Event Name</label>
+              <input type="text" id="customEventName" placeholder="Enter custom event name">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clickId">Click ID</label>
+              <input type="text" id="clickId" placeholder="3184742045291813272">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder="testuser@example.com">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="externalId">External ID</label>
+              <input type="text" id="externalId" placeholder="e836a8aaa8c6d975fe8d9819fc0e12bf0d24892e">
+            </div>
+            <div class="form-group">
+              <label for="idfa">IDFA</label>
+              <input type="text" id="idfa" placeholder="CA7583CD-A667-48BC-B806-42ECB2B48608">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="aaid">AAID</label>
+              <input type="text" id="aaid" placeholder="38400000-8cf0-11bd-b23e-10b96e40000d">
+            </div>
+            <div class="form-group">
+              <label for="value">Value</label>
+              <input type="number" id="value" placeholder="1255">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="currency">Currency</label>
+              <input type="text" id="currency" placeholder="USD">
+            </div>
+            <div class="form-group">
+              <label for="itemCount">Item Count</label>
+              <input type="number" id="itemCount" placeholder="1">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="conversionId">Conversion ID</label>
+              <input type="text" id="conversionId" placeholder="H72B9A4YXQ">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phoneNumber">Phone Number</label>
+              <input type="tel" id="phoneNumber" placeholder="+15554441234">
+            </div>
+            <div class="form-group">
+              <label for="uuid">UUID</label>
+              <input type="text" id="uuid" placeholder="1684189007728.7c73f2ae-a433-4d7b-9838-f467da98f48e">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="ipAddress">IP Address</label>
+              <input type="text" id="ipAddress" placeholder="192.0.2.1">
+            </div>
+            <div class="form-group">
+              <label for="userAgent">User Agent</label>
+              <input type="text" id="userAgent" placeholder="Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="optOut">Opt Out</label>
+              <select id="optOut" class="form-control">
+                <option value="">Select Opt Out Status</option>
+                <option value="false">False</option>
+                <option value="true">True</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="screenWidth">Screen Width</label>
+              <input type="number" id="screenWidth" placeholder="3440">
+            </div>
+            <div class="form-group">
+              <label for="screenHeight">Screen Height</label>
+              <input type="number" id="screenHeight" placeholder="1440">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="dataProcessingMode">Data Processing Mode</label>
+              <input type="text" id="dataProcessingMode" placeholder="LDU">
+            </div>
+            <div class="form-group">
+              <label for="country">Country</label>
+              <input type="text" id="country" placeholder="US">
+            </div>
+            <div class="form-group">
+              <label for="region">Region</label>
+              <input type="text" id="region" placeholder="US-CA">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="productId">Product ID</label>
+              <input type="text" id="productId" placeholder="item-213">
+            </div>
+            <div class="form-group">
+              <label for="productName">Product Name</label>
+              <input type="text" id="productName" placeholder="Carne Asada Burrito">
+            </div>
+            <div class="form-group">
+              <label for="productCategory">Product Category</label>
+              <input type="text" id="productCategory" placeholder="Food Items">
+            </div>
+          </div>
+          <button onclick="triggerBodyOverride()">Send Event</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
 </html>
