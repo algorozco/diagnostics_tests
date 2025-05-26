@@ -545,7 +545,7 @@
          
         function fireCapiRequest(body) {
           console.log("Sending request to Account ID: ", document.getElementById('accountId').value || "default"); 
-          console.log("Sending this body (raw):", body);
+          console.log("Sending this body (raw):", JSON.stringify(body));
            
            const accountId = document.getElementById('accountId').value;
            const capiToken = document.getElementById('capiToken').value;
