@@ -33,6 +33,11 @@ app.get('/index.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'diagnostics_tests.html'));
 });
 
+app.get('/diagnostics_tests.html', (req, res) => {
+  console.log('get diagnostics_tests');
+  res.sendFile(path.join(__dirname, 'public', 'diagnostics_tests.html'));
+});
+
 // Route to handle incoming GTM requests
 app.post('/trigger', async (req, res) => {
   try {
