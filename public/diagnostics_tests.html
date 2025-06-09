@@ -207,7 +207,10 @@
           email: 'testuser@example.com',
           externalId: 'e836a8aaa8c6d975fe8d9819fc0e12bf0d24892e',
           idfa: 'CA7583CD-A667-48BC-B806-42ECB2B48608',
-          aaid: '38400000-8cf0-11bd-b23e-10b96e40000d'
+          aaid: '38400000-8cf0-11bd-b23e-10b96e40000d',
+          dpm: "LDU", // or ["LDU"]
+          dpcc: "US",
+          dprc: "US-CA" // or "CA"
          };
 
          const VALID_PIXEL_BODY_METADATA = {
@@ -217,8 +220,12 @@
           email: 'testuser@example.com',
           externalId: 'e836a8aaa8c6d975fe8d9819fc0e12bf0d24892e',
           idfa: 'CA7583CD-A667-48BC-B806-42ECB2B48608',
-          aaid: '38400000-8cf0-11bd-b23e-10b96e40000d'
+          aaid: '38400000-8cf0-11bd-b23e-10b96e40000d',
+          dpm: "LDU", // or ["LDU"]
+          dpcc: "US",
+          dprc: "US-CA" // or "CA"
          };
+
          
          const VALID_CAPI_BODY = {
           "test_mode": false,
@@ -499,7 +506,7 @@
          // --- Issue 10: Invalid data processing mode ---
          // Scenario 1: data processing mode set to something other than "LDU"
          function fireInvalidDataProcessingMode() {
-          var pixel_body = {...VALID_PIXEL_BODY};
+          var pixel_body = {...VALID_PIXEL_BODY, dpm:"GDPR"};
           var capi_body = clone(VALID_CAPI_BODY);
           capi_body.events[0].user.data_processing_options.modes = ["GDPR"];
           capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[2];
