@@ -417,9 +417,9 @@
          
          // Scenario 3: Email undefined
          function fireInvalidEmailUndefined() {
-          var pixel_body = {...VALID_PIXEL_BODY, email: undefined};
+          var pixel_body = {...VALID_PIXEL_BODY, email: "undefined"};
           var capi_body = clone(VALID_CAPI_BODY);
-          capi_body.events[0].user.email = undefined;
+          capi_body.events[0].user.email = "undefined";
           capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[1];
           document.getElementById("text_display").innerHTML = "Invalid Email (undefined) event sent!"+" ("+event_type_lower_funnel[1]+")";
           rdt('track', event_type_lower_funnel[1], pixel_body);
@@ -428,9 +428,9 @@
          
          // Scenario 4: Email null
          function fireInvalidEmailNull() {
-          var pixel_body = {...VALID_PIXEL_BODY, email: null};
+          var pixel_body = {...VALID_PIXEL_BODY, email: "null"};
           var capi_body = clone(VALID_CAPI_BODY);
-          capi_body.events[0].user.email = null;
+          capi_body.events[0].user.email = "null";
           capi_body.events[0].event_type.tracking_type = event_type_lower_funnel[1];
           document.getElementById("text_display").innerHTML = "Invalid Email (null) event sent!"+" ("+event_type_lower_funnel[1]+")";
           rdt('track', event_type_lower_funnel[1], pixel_body);
